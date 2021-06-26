@@ -3,7 +3,7 @@ import {Link,useHistory} from 'react-router-dom'
 import {userContext} from '../../App'
 import M from 'materialize-css'
 const Signin=()=>{ 
-   // const {state,dispatch} =useContext(userContext)
+    const {state,dispatch} =useContext(userContext)
     const history=useHistory() 
     const [password,setPassword]=useState("")
     const [email,setEmail]=useState("") 
@@ -29,9 +29,9 @@ const Signin=()=>{
                 M.toast({html: data.error,classes:"#ff7043 deep-orange lighten-1"})
             }
             else{
-                // localStorage.setItem("jwt",data.token)
-                // localStorage.setItem("user",JSON.stringify(data.user))
-                // dispatch({type:"USER",payload:data.user})
+                localStorage.setItem("jwt",data.token)
+                localStorage.setItem("user",JSON.stringify(data.user))
+                dispatch({type:"USER",payload:data.user})
                 M.toast({html:"Signed in successfully ",classes:"#009688 teal"})
                 history.push('/')
             }

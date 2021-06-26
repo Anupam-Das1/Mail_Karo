@@ -11,18 +11,18 @@ import {reducer,initialState} from './reducers/userReducer'
 export const userContext=createContext()
 
 const Routing=()=>{
-  // const history=useHistory()
-  // const {state,dispatch}=useContext(userContext)
-  // useEffect(()=>{
-  //   const user=JSON.parse(localStorage.getItem("user"))
-  //     if(user){
-  //        dispatch({type:"USER",payload:user})
-  //      // history.push('/')
-  //     }
-  //     else{
-  //       history.push('/signin')
-  //     }
-  // },[])
+  const history=useHistory()
+  const {state,dispatch}=useContext(userContext)
+  useEffect(()=>{
+    const user=JSON.parse(localStorage.getItem("user"))
+      if(user){
+         dispatch({type:"USER",payload:user})
+         //history.push('/')
+      }
+      else{
+        history.push('/signin')
+      }
+  },[])
   return(
     <Switch>
          <Route exact path="/">
@@ -46,12 +46,12 @@ const Routing=()=>{
 function App() {
   const [state,dispatch] =useReducer(reducer,initialState)
   return (
-      // <userContext.Provider value={{state,dispatch}}> 
+      <userContext.Provider value={{state,dispatch}}> 
       <BrowserRouter>
         <NavBar />
         <Routing />
       </BrowserRouter>
-      // </userContext.Provider>
+      </userContext.Provider>
       // <div>
       //   <NavBar />
       // </div>
