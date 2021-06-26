@@ -6,13 +6,14 @@ const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
 const {JWT_SECRET}=require('../config/keys')
 const requireLogin=require('../middleware/requireLogin')
-
+ 
 
 router.post('/signup',(req,res)=>{
     const {name,email,password,pic}=req.body
     if(!email || !password || !name){
          return res.status(422).json({error:"Please add all fields"})
      }
+    // res.json({messagge:"Succesfully sent"})
     User.findOne({email:email})
      .then((savedUser)=>{
          if(savedUser){
@@ -55,10 +56,11 @@ router.post('/signin',(req,res)=>{
         bcrypt.compare(password,savedUser.password)
         .then(doMatch=>{
             if(doMatch) {
-               // res.json({message:"Succesfully signed in"})
+                //res.json({message:"Succesfully signed in"})
                const token=jwt.sign({_id:savedUser._id},JWT_SECRET)
-               const {_id,name,email,followers,following,pic}=savedUser
-               res.json({token:token,user:{_id,name,email,followers,following,pic}})
+               //const {_id,name,email,followers,following,pic}=savedUser
+               //res.json({token:token,user:{_id,name,email,followers,following,pic}})
+               res.json({token})
             }
             else{
                 return res.status(422).json({error:"Invalid email or passward"})
