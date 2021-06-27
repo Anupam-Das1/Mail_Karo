@@ -2,31 +2,60 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Email = mongoose.model("mail");
-const bcrypt = require("bcryptjs");
+// const User = mongoose.model("user");
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../config/keys");
 const requireLogin = require("../middleware/requireLogin");
+const { google } = require("googleapis");
 
 const CONFIG = require("../config/dev");
 
 router.get("/", (req, res) => {
-  const oauth2Client = new OAuth2(
+  if (!req.cookies.jwt) return res.status(403).json({ error: "not loggedin" });
+
+  return res.status(200).json({ status: "loggedin" });
+});
+
+router.get("/mails", (req, res) => {
+  if (!req.cookies.jwt) return res.status(403).json({ error: "not loggedin" });
+  let cookie = jwt.verify(req.cookies.jwt, CONFIG.JWT_SECRET);
+
+  // Create an OAuth2 client object from the credentials in our config file
+  const oauth2Client = new google.auth.OAuth2(
     CONFIG.oauth2Credentials.client_id,
     CONFIG.oauth2Credentials.client_secret,
     CONFIG.oauth2Credentials.redirect_uris[0]
   );
 
-  if (req.query.error) {
-    return res.staus(403).json(req.query.error);
-  } else {
-    oauth2Client.getToken(req.query.code, function (err, token) {
-      if (err) return res.redirect("/");
+  // Add this specific user's credentials to our OAuth2 client
+  oauth2Client.credentials = cookie.gCredentials;
+  console.log(cookie.gCredentials);
+  //account info
+  const acInfo = google.people({ version: "v1", auth: oauth2Client });
 
-      // Store the credentials given by google into a jsonwebtoken in a cookie called 'jwt'
-      res.cookie("jwt", jwt.sign(token, CONFIG.JWTsecret));
-      return res.redirect("/get_some_data");
-    });
-  }
+  acInfo.people.get(
+    {
+      resourceName: "people/me",
+      personFields: "emailAddresses",
+    },
+    (err, userInfoRes) => {
+      if (err) return console.error("The API returned an error: " + err);
+      return res.status(200).json(userInfoRes.data);
+    }
+  );
+});
+
+router.post("/create", (req, res) => {
+  if (!req.cookies.jwt) return res.status(403).json({ error: "not loggedin" });
+  let cookie = jwt.verify(req.cookies.jwt, CONFIG.JWT_SECRET);
+
+  const formMail = req.body;
+  const newMail = new mail({
+    to: formMail.to,
+    cc: formMail.cc,
+    sub: formMail.sub,
+    body: formMail.body,
+    createdBy: User(cookie.userId),
+  });
 });
 
 module.exports = router;

@@ -21,6 +21,7 @@ const mailSchema = new mongoose.Schema(
     crearedBy: {
       type: ObjectId,
       ref: "User",
+      required: true,
     },
   },
   { timestamps: true }

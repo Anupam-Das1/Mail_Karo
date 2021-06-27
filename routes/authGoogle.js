@@ -5,9 +5,6 @@ const User = mongoose.model("User");
 const { google } = require("googleapis");
 const jwt = require("jsonwebtoken");
 const requireLogin = require("../middleware/requireLogin");
-const cookieParser = require("cookie-parser");
-
-// router.use(cookieParser());
 
 const CONFIG = require("../config/keys");
 const { userInfo } = require("os");
@@ -78,14 +75,21 @@ router.get("/auth_callback", async (req, res) => {
         },
         (err, { data }) => {
           if (err) return res.status(422).json(err);
-          usrEmail = data["emailAddresses"][0]["value"];
           usrName = data["names"][0]["displayName"];
+          usrEmail = data["emailAddresses"][0]["value"];
           User.findOne({ email: usrEmail })
             .then((savedUser) => {
               if (savedUser) {
+                const cookie = {
+                  usrId: savedUser.id,
+                  name: usrName,
+                  mail: usrEmail,
+                  gCredentials: token,
+                };
+                res.cookie("jwt", jwt.sign(cookie, CONFIG.JWT_SECRET));
                 return res
-                  .status(422)
-                  .json({ error: "User already exist with that email" });
+                  .status(200)
+                  .json({ message: "loggedin successfully" });
               }
               const user = new User({
                 email: usrEmail,
@@ -95,7 +99,13 @@ router.get("/auth_callback", async (req, res) => {
               user
                 .save()
                 .then((user) => {
-                  res.cookie("jwt", jwt.sign(token, CONFIG.JWT_SECRET));
+                  const cookie = {
+                    usrId: user.id,
+                    name: usrName,
+                    mail: usrEmail,
+                    gCredentials: token,
+                  };
+                  res.cookie("jwt", jwt.sign(cookie, CONFIG.JWT_SECRET));
                   res.status(200).json({ message: "Added successfully" });
                 })
                 .catch((err) => {
