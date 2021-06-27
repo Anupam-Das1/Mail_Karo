@@ -12,8 +12,8 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    default: null,
-    required: true,
+    // default: null,
+    // required: true,
   },
   pic: {
     type: String,
@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema({
   },
   googleCredentials: {
     type: String,
-    default: null,
-    required: true,
+    // default: "",
+    // required: true,
   },
 });
 

@@ -3,6 +3,10 @@ const app = express();
 const mongoose = require("mongoose");
 const { MONGOURI } = require("./config/keys");
 const PORT = process.env.PORT || 8080;
+
+const cors = require("cors");
+app.use(cors());
+
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 

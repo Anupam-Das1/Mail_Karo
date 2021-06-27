@@ -1,8 +1,6 @@
-import React from 'react'
-
-const Home = ()=>{
-    return (
-        <h1>Home</h1>
-    )
-}
-export default Home
+import React from "react";
+import EmailForm from "./emailForm";
+const Home = () => {
+  return <EmailForm />;
+};
+export default Home;
