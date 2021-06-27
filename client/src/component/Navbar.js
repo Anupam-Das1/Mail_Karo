@@ -13,6 +13,11 @@ const NavBar = () => {
         <li>
           <Link to="/history">History</Link>
         </li>,
+        <li>
+          <Link to="/">
+            <img src={JSON.parse(localStorage.getItem("user"))["pic"]} alt="" />
+          </Link>
+        </li>,
       ];
     } else {
       return [
