@@ -42,7 +42,7 @@ const Signup = () => {
       });
       return;
     }
-    fetch("http://localhost:8080/signup", {
+    fetch("/signup", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
