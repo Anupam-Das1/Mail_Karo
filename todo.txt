@@ -1,0 +1,21 @@
+ToDo:
+    1. email BackEnd+FrontEnd
+    2. schedule BackEnd
+    3. schedule FrontEnd
+
+BackEnd :
+    Model:
+        email
+        schedule
+    api:
+        email : retreive list(get), add(post), remove(delete), edit(put)
+        schedule : get, post, put,
+    services:
+        send by schedule
+
+FrontEnd:
+    login signup
+    non gmail ac gmailed 
+    email post
+    list get
+    history get
