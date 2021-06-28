@@ -15,6 +15,18 @@ const NavBar = () => {
           <Link to="/history">History</Link>
         </li>,
         <li>
+          <button
+            className="btn waves-effect waves-light "
+            onClick={() => {
+              localStorage.clear();
+              dispatch({ type: "CLEAR" });
+              history.push("/signin");
+            }}
+          >
+            Logout
+          </button>
+        </li>,
+        <li>
           <Link to="/">
             <img src={JSON.parse(localStorage.getItem("user"))["pic"]} alt="" />
           </Link>
