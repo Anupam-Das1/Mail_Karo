@@ -14,18 +14,6 @@ const NavBar = () => {
         <li>
           <Link to="/history">History</Link>
         </li>,
-        <li >
-          <button
-            className="btn waves-effect waves-light "
-            onClick={() => {
-              localStorage.clear();
-              dispatch({ type: "CLEAR" });
-              history.push("/signin");
-            }}
-          >
-            Logout
-          </button>
-        </li>,
       ];
     } else {
       return [
