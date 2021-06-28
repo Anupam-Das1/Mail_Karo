@@ -3,16 +3,31 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Email = mongoose.model("mail");
 // const User = mongoose.model("user");
+const User=mongoose.model("User")
 const jwt = require("jsonwebtoken");
 const requireLogin = require("../middleware/requireLogin");
 const { google } = require("googleapis");
-
+const { sendGmail } = require("../services/gmail");
 const CONFIG = require("../config/dev");
 
 router.get("/", (req, res) => {
   if (!req.cookies.jwt) return res.status(403).json({ error: "not loggedin" });
 
   return res.status(200).json({ status: "loggedin" });
+});
+
+router.post("/sendgmail", (req, res) => {
+  const { to, cc, body, sub, from } = req.body;
+  if (!to || !cc || !body || !sub || !from) {
+    return res.status(422).json({ error: "Please add all fields" });
+  }
+  User.findOne({ email: from })
+    .then((savedUser) => {
+      sendGmail(savedUser.googleCredentials, req.body);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 router.get("/mails", (req, res) => {

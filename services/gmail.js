@@ -60,4 +60,4 @@ function sendGmail(token, mailBody) {
 
 module.exports = sendGmail;
 
-sendGmail(token);
+//sendGmail(token);

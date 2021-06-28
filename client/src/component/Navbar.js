@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { userContext } from "../App";
 import M from "materialize-css";
 const NavBar = () => {
+  const history = useHistory();
   const { state, dispatch } = useContext(userContext);
   const renderList = () => {
     if (state) {
@@ -12,6 +13,18 @@ const NavBar = () => {
         </li>,
         <li>
           <Link to="/history">History</Link>
+        </li>,
+        <li >
+          <button
+            className="btn waves-effect waves-light "
+            onClick={() => {
+              localStorage.clear();
+              dispatch({ type: "CLEAR" });
+              history.push("/signin");
+            }}
+          >
+            Logout
+          </button>
         </li>,
       ];
     } else {

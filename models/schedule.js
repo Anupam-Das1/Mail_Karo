@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 const mailSchema = new mongoose.Schema(
   {
-    cc: {
+    title: {
       type: String,
       required: true,
     },
@@ -18,6 +18,10 @@ const mailSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    second:{
+
+    },
+    
     crearedBy: {
       type: ObjectId,
       ref: "User",
