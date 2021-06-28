@@ -1,6 +1,7 @@
 import React, { useState, useContext, useReducer } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { userContext } from "../../App";
+import GoogleLogin from "react-google-login";
 import M from "materialize-css";
 
 const Signin = () => {
@@ -52,6 +53,40 @@ const Signin = () => {
       });
   };
 
+  const handleLogin = async (googleData) => {
+    console.log(googleData.googleId);
+    fetch("/gauth/auth_callback", {
+      method: "POST",
+      body: JSON.stringify({
+        token: googleData.tokenId,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(data);
+        if (data.error) {
+          M.toast({
+            html: data.error,
+            classes: "#ff7043 deep-orange lighten-1",
+          });
+          console.log(data.err_details);
+        } else {
+          localStorage.setItem("jwt", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          dispatch({ type: "USER", payload: data.user });
+          M.toast({ html: "Signed in successfully ", classes: "#009688 teal" });
+          history.push("/");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // store returned user somehow
+  };
+
   return (
     <div className="mycard">
       <div className="card auth-card input-field">
@@ -75,13 +110,13 @@ const Signin = () => {
           >
             Signin
           </button>
-          <a
-            className="btn waves-effect waves-light "
-            //   onClick={(e) => e.preventDefault()}
-            href="https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fmail.google.com%2F%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.modify%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.compose%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.send&response_type=code&client_id=504438976367-lkgjae7k3fu2ufmj85jbqvnilof4rttt.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fgauth%2Fauth_callback"
-          >
-            LogIn with Google
-          </a>
+          <GoogleLogin
+            clientId="504438976367-lkgjae7k3fu2ufmj85jbqvnilof4rttt.apps.googleusercontent.com"
+            buttonText="Log in with Google"
+            onSuccess={handleLogin}
+            onFailure={handleLogin}
+            cookiePolicy={"single_host_origin"}
+          />
         </div>
         <h5>
           <Link to="/signup">Don't have an account ?</Link>
